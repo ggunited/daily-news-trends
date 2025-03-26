@@ -1,9 +1,11 @@
 name: Daily News Trends Word Cloud
 
 on:
-  schedule:
-    - cron: '0 0 * * *'  # Runs daily at midnight
-  workflow_dispatch:  # Manual trigger
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:  # Allows manual triggering
 
 jobs:
   generate-wordcloud:
@@ -20,15 +22,16 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install requests wordcloud matplotlib
     
     - name: Generate Word Cloud
       run: python news_aggregator.py
     
     - name: Commit and Push
       run: |
+        mkdir -p output
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add daily_news_trends.png
-        git commit -m "Update daily news trends word cloud"
+        git add output/daily_news_trends.png || true
+        git commit -m "Update daily news trends word cloud" || echo "No changes to commit"
         git push
