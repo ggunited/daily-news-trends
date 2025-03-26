@@ -2,6 +2,18 @@ import requests
 from bs4 import BeautifulSoup
 import json
 from typing import List
+import os
+
+# Add near the top of the file
+API_KEY = os.environ.get('NEWS_API_KEY')
+
+# Modify API call to include your key
+response = requests.get(source, params={
+    'apiKey': API_KEY,
+    'q': topic,
+    'language': 'en',
+    'sortBy': 'publishedAt'
+})
 
 class NewsAggregator:
     def __init__(self, topics: List[str]):
